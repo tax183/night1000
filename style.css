@@ -1,0 +1,561 @@
+/* 
+ * Reversed Roles – العالم تحت سيطرتك
+ * 3-Stage Aladdin Game
+ * Palette: Night (#0b0d17), Sand (#e8d3b9), Gold (#d4af37), Burgundy (#c0392b), Teal (#1abc9c)
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=Noto+Kufi+Arabic:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap');
+
+:root {
+    --bg-color: #0b0d17;
+    --text-color: #e8d3b9;
+    --accent-color: #c0392b;
+    --gold-color: #d4af37;
+    --gold-glow: 0 0 15px rgba(212, 175, 55, 0.6);
+    --teal: #1abc9c;
+    --purple: #8e44ad;
+    --dark-purple: #2c0e3a;
+    --glass-bg: rgba(11, 13, 23, 0.75);
+    --glass-border: rgba(212, 175, 55, 0.3);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+body {
+    background-color: #000;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Noto Kufi Arabic', 'Uncial Antiqua', sans-serif;
+}
+
+#game-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border: 2px solid rgba(212, 175, 55, 0.4);
+    box-shadow: 0 0 60px rgba(212, 175, 55, 0.15), inset 0 0 60px rgba(0, 0, 0, 0.5);
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at bottom, #2c0e3a 0%, #0b0d17 70%);
+}
+
+/* ---------- UI Layer ---------- */
+#ui-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* ---------- HUD ---------- */
+#hud {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px 30px;
+    pointer-events: none;
+    z-index: 15;
+    direction: rtl;
+}
+
+#hud.hidden {
+    display: none;
+}
+
+#score-board {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+}
+
+#stage-label {
+    font-size: 0.85rem;
+    color: var(--teal);
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(26, 188, 156, 0.5);
+}
+
+#score-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(232, 211, 185, 0.6);
+}
+
+#score-value {
+    font-family: 'Cinzel Decorative', 'Uncial Antiqua', serif;
+    font-size: 2.5rem;
+    color: var(--gold-color);
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+    line-height: 1;
+}
+
+#stage-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+/* Health Bar */
+#health-bar-container {
+    width: 180px;
+    height: 16px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--accent-color);
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 0 10px rgba(192, 57, 43, 0.3);
+}
+
+#health-bar-container.hidden {
+    display: none;
+}
+
+#health-bar {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #e74c3c, #c0392b);
+    border-radius: 8px;
+    transition: width 0.3s ease;
+    box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.3);
+}
+
+#health-label {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.7rem;
+}
+
+/* Progress Bar */
+#progress-bar-container {
+    width: 180px;
+    height: 12px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--glass-border);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+}
+
+#progress-bar {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal), var(--gold-color));
+    border-radius: 6px;
+    transition: width 0.4s ease;
+}
+
+#progress-label {
+    position: absolute;
+    left: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.55rem;
+    color: rgba(255, 255, 255, 0.7);
+    direction: rtl;
+}
+
+/* Hit Counter */
+#hit-counter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--gold-color);
+    font-size: 1rem;
+}
+
+#hit-counter.hidden {
+    display: none;
+}
+
+#hit-label {
+    font-size: 0.8rem;
+}
+
+#hit-value {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.2rem;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+
+/* ---------- Screens ---------- */
+.screen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    pointer-events: auto;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    z-index: 20;
+}
+
+.screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.95);
+}
+
+.screen.active {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.screen-content {
+    background: linear-gradient(135deg, rgba(44, 14, 58, 0.95), rgba(11, 13, 23, 0.95));
+    /* Dark Royal */
+    border: 2px solid var(--gold-color);
+    border-radius: 24px;
+    padding: 50px 60px;
+    max-width: 650px;
+    width: 90%;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.9), 0 0 25px rgba(212, 175, 55, 0.2), inset 0 0 60px rgba(0, 0, 0, 0.6);
+    position: relative;
+}
+
+.title-ar {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--gold-color);
+    text-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+    margin-bottom: 0.3rem;
+    line-height: 1.4;
+    direction: rtl;
+}
+
+.subtitle-en {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.3rem;
+    color: var(--teal);
+    letter-spacing: 4px;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 0 15px rgba(26, 188, 156, 0.4);
+}
+
+.tagline {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 1rem;
+    color: var(--text-color);
+    margin-bottom: 2rem;
+    opacity: 0.85;
+    line-height: 1.6;
+    direction: rtl;
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.info-section {
+    margin-bottom: 2.5rem;
+    text-align: right;
+    direction: rtl;
+}
+
+.info-section h3 {
+    color: var(--gold-color);
+    font-size: 1.4rem;
+    margin-bottom: 0.8rem;
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 5px;
+    display: inline-block;
+}
+
+.info-section p {
+    color: var(--text-color);
+    line-height: 1.6;
+    opacity: 0.9;
+}
+
+.team-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+.team-list li {
+    color: var(--text-color);
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    position: relative;
+    padding-right: 20px;
+}
+
+.team-list li::before {
+    content: "•";
+    color: var(--gold-color);
+    position: absolute;
+    right: 0;
+    font-weight: bold;
+}
+
+.primary-btn {
+    background: url('but.png') no-repeat center center;
+    background-size: 100% 100%;
+    color: var(--text-color);
+    border: none;
+    padding: 24px 60px;
+    font-size: 1.5rem;
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+    transition: all 0.3s ease;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    display: inline-block;
+    min-width: 220px;
+    text-align: center;
+}
+
+.primary-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    filter: drop-shadow(0 8px 15px rgba(212, 175, 55, 0.4));
+}
+
+.primary-btn:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* ---------- Dialogue ---------- */
+.dialogue-box {
+    background: linear-gradient(135deg, rgba(44, 14, 58, 0.95), rgba(11, 13, 23, 0.95));
+    border: 2px solid var(--gold-color);
+    border-radius: 20px;
+    padding: 40px 50px;
+    max-width: 700px;
+    width: 90%;
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(212, 175, 55, 0.15), inset 0 0 50px rgba(0, 0, 0, 0.6);
+    position: relative;
+}
+
+.dialogue-characters {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.char-portrait {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 2px solid var(--gold-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    background: rgba(212, 175, 55, 0.1);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+}
+
+.dialogue-content {
+    text-align: right;
+    direction: rtl;
+    margin-bottom: 24px;
+}
+
+#dialogue-speaker {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gold-color);
+    display: block;
+    margin-bottom: 10px;
+}
+
+#dialogue-text {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 1rem;
+    color: var(--text-color);
+    line-height: 1.8;
+    min-height: 60px;
+}
+
+.dialogue-btn {
+    background: url('but.png') no-repeat center center;
+    background-size: 100% 100%;
+    color: var(--text-color);
+    border: none;
+    padding: 18px 50px;
+    font-size: 1.1rem;
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4));
+}
+
+.dialogue-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+    filter: drop-shadow(0 5px 10px rgba(212, 175, 55, 0.3));
+}
+
+/* ---------- Stage Complete ---------- */
+.stage-clear {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--gold-color);
+    text-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+    margin-bottom: 1rem;
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+
+    0%,
+    100% {
+        text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+    }
+
+    50% {
+        text-shadow: 0 0 40px rgba(212, 175, 55, 0.8), 0 0 60px rgba(212, 175, 55, 0.3);
+    }
+}
+
+#stage-complete-msg {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 1.1rem;
+    color: var(--text-color);
+    margin-bottom: 2rem;
+    direction: rtl;
+    line-height: 1.6;
+}
+
+/* ---------- Victory ---------- */
+.victory-content {
+    background: linear-gradient(135deg, rgba(26, 188, 156, 0.1), rgba(212, 175, 55, 0.1)) !important;
+}
+
+.victory-text {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    font-size: 1.3rem;
+    color: var(--teal);
+    direction: rtl;
+    margin-bottom: 1rem;
+}
+
+/* ---------- Game Over ---------- */
+#game-over-screen .screen-content {
+    border-color: rgba(192, 57, 43, 0.4);
+}
+
+#game-over-stage {
+    font-size: 0.9rem;
+    color: rgba(232, 211, 185, 0.6);
+    direction: rtl;
+}
+
+/* ---------- Animations ---------- */
+@keyframes float-in {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.screen.active .screen-content,
+.screen.active .dialogue-box {
+    animation: float-in 0.6s ease-out;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+    .title-ar {
+        font-size: 2rem;
+    }
+
+    .subtitle-en {
+        font-size: 1rem;
+    }
+
+    .screen-content {
+        padding: 30px 25px;
+    }
+
+    .dialogue-box {
+        padding: 25px 20px;
+    }
+
+    .primary-btn {
+        font-size: 1.1rem;
+        padding: 12px 35px;
+    }
+
+    .controls-hint {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    #score-value {
+        font-size: 2rem;
+    }
+
+    .char-portrait {
+        width: 55px;
+        height: 55px;
+        font-size: 1.6rem;
+    }
+
+    #hud {
+        padding: 12px 16px;
+    }
+
+    #health-bar-container,
+    #progress-bar-container {
+        width: 130px;
+    }
+}
+
+@media (max-width: 480px) {
+    .title-ar {
+        font-size: 1.6rem;
+    }
+
+    .screen-content {
+        padding: 20px 16px;
+        border-radius: 16px;
+    }
+
+    .dialogue-box {
+        padding: 18px 14px;
+        border-radius: 14px;
+    }
+}

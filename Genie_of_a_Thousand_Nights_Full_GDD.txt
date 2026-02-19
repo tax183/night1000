@@ -1,0 +1,203 @@
+GENIE OF A THOUSAND NIGHTS Full Game Design Documentation (GDD) Version
+1.0
+
+  ------------------
+  1. GAME OVERVIEW
+  ------------------
+
+Genie of a Thousand Nights is a 2D side-scrolling arcade game inspired
+by Flappy Bird mechanics but redesigned around environmental control
+instead of direct character movement.
+
+The player does NOT control the Genie directly. The Genie moves
+automatically along a fixed horizontal path.
+
+The player controls the vertical movement of obstacles
+(columns/minarets) to create safe openings for the Genie to pass
+through.
+
+Theme: Arabian Nights (One Thousand and One Nights) Genre: Arcade /
+Endless Runner Platform: Mobile / PC Engine Recommendation: Unity 2D
+(URP)
+
+  ---------------------------
+  2. CORE GAMEPLAY MECHANIC
+  ---------------------------
+
+Character Movement: - The Genie moves forward automatically at constant
+speed. - Vertical movement follows a fixed smooth hover path OR slight
+auto-drift. - Player cannot directly move the Genie.
+
+Obstacle Control Mechanic: - Obstacles consist of top and bottom
+vertical structures. - Player adjusts obstacle height in real-time.
+
+Input Options: Option A: - Tap right side of screen = Move obstacles
+upward - Tap left side of screen = Move obstacles downward
+
+Option B: - Drag obstacle vertically to reposition gap
+
+Constraints: - Obstacles have MinHeight and MaxHeight limits. - Movement
+uses smooth interpolation (Lerp). - Slight delay can be added for
+difficulty scaling.
+
+Objective: - Align gap with Genie’s current height. - Collect lanterns
+placed between obstacles. - Survive as long as possible.
+
+  --------------
+  3. GAME LOOP
+  --------------
+
+1.  Start Run
+2.  Obstacles Spawn Procedurally
+3.  Player Adjusts Obstacles
+4.  Genie Passes Through
+5.  Score + Lantern Collection
+6.  Difficulty Increases
+7.  Repeat Until Collision
+
+  --------------------
+  4. OBSTACLE SYSTEM
+  --------------------
+
+Types of Obstacles:
+
+1.  Floating Minarets
+2.  Sandstone Pillars
+3.  Magical Archways
+4.  Mirror Gates (reverse control temporarily)
+5.  Moving Sand Columns
+
+Difficulty Scaling: - Reduced gap size - Increased forward speed -
+Obstacles gain weight (slower response) - Moving obstacles added
+
+Spawner System: - Time-based spawn interval - Randomized vertical base
+position - Difficulty curve modifier
+
+  -------------------
+  5. LANTERN SYSTEM
+  -------------------
+
+Lantern Types:
+
+Bronze Lantern: - +1 Score
+
+Silver Lantern: - Temporary slow motion
+
+Golden Lantern: - Ability unlock progress
+
+Cursed Lantern: - Doubles score but increases difficulty temporarily
+
+Spawn Logic: - Appears centered in obstacle gap - Occasionally placed
+off-center for skill challenge
+
+  -----------------------------
+  6. GENIE PROGRESSION SYSTEM
+  -----------------------------
+
+Level 1 – Mist Spirit - Basic visuals - No special ability
+
+Level 2 – Ember Marid - Visual glow effect - Short energy burst
+(auto-save once per run)
+
+Level 3 – Storm Djinn - Passive shield (1 hit protection)
+
+Level 4 – Mythic Shapeshifter - Temporary transformation ability
+
+Progression Formula: XP Required = 50 * Level^1.5
+
+  ----------------------------------
+  7. ENVIRONMENT THEMES (CHAPTERS)
+  ----------------------------------
+
+Chapter 1 – Desert of Ali Baba - Cave entrances - Thief shadows - Golden
+treasure glow
+
+Chapter 2 – Palace of Aladdin - Floating carpets - Jewel-lit sky - Magic
+arches
+
+Chapter 3 – Seas of Sinbad - Storm clouds - Sea vortex pillars - Kraken
+silhouettes
+
+Each chapter introduces: - Unique visuals - Modified obstacle behavior -
+Thematic soundtrack
+
+  ------------------
+  8. ART DIRECTION
+  ------------------
+
+Color Palette: - Deep blue night skies - Warm gold highlights - Emerald
+green magic glow - Sandstone beige
+
+Visual Style: - Islamic geometric patterns - Glowing particle lantern
+effects - Soft magical fog - Ornate UI frames
+
+UI Design: - Calligraphy-inspired font - Gold ornamental borders -
+Animated page-turn transitions
+
+  -----------------
+  9. AUDIO DESIGN
+  -----------------
+
+Dynamic Music States:
+
+Calm: - Oud + ambient desert wind
+
+Tension: - Faster percussion (tabla)
+
+Danger: - Heartbeat + rising strings
+
+Victory: - Orchestral Middle Eastern flourish
+
+Sound Effects: - Lantern chime - Sand swirl - Magic shimmer - Collision
+impact
+
+  ----------------------------
+  10. TECHNICAL ARCHITECTURE
+  ----------------------------
+
+Core Systems:
+
+1.  Genie Auto-Movement Controller
+2.  Obstacle Vertical Control System
+3.  Procedural Spawner
+4.  Lantern Collection Manager
+5.  XP & Level System
+6.  Audio State Manager
+7.  Difficulty Curve Controller
+
+Physics: - Rigidbody2D for Genie - Kinematic control for obstacles
+
+Collision: - Trigger zones for scoring - Collider detection for failure
+
+  ------------------------
+  11. DIFFICULTY FORMULA
+  ------------------------
+
+Speed Increase: BaseSpeed + (TimeAlive * 0.02)
+
+Gap Reduction: BaseGap - (Level * 0.1)
+
+Obstacle Reaction Delay: ReactionDelay = 0.1 + (Level * 0.05)
+
+  ----------------------
+  12. FUTURE EXPANSION
+  ----------------------
+
+-   Multiplayer race mode
+-   Boss encounters
+-   Lantern crafting system
+-   Story-driven campaign mode
+-   Cosmetic skins
+
+  -----------------------------
+  13. MONETIZATION (OPTIONAL)
+  -----------------------------
+
+-   Genie skins
+-   Lantern glow variations
+-   Premium story chapters
+-   No pay-to-win mechanics
+
+  -----------------
+  END OF DOCUMENT
+  -----------------

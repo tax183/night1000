@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reversed Roles – العالم تحت سيطرتك</title>
+    <meta name="description" content="لعبة ذكية حيث تتحكم بالبيئة لحماية الأبطال - مستوحاة من علاء الدين وياسمين">
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=Noto+Kufi+Arabic:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+
+        <!-- UI Overlay -->
+        <div id="ui-layer">
+            <!-- HUD -->
+            <div id="hud" class="hidden">
+                <div id="score-board">
+                    <span id="stage-label">المرحلة ١</span>
+                    <span id="score-label">النقاط</span>
+                    <span id="score-value">0</span>
+                </div>
+                <div id="stage-info">
+                    <div id="health-bar-container" class="hidden">
+                        <div id="health-bar"></div>
+                        <span id="health-label">❤️</span>
+                    </div>
+                    <div id="progress-bar-container">
+                        <div id="progress-bar"></div>
+                        <span id="progress-label">التقدم</span>
+                    </div>
+                    <div id="hit-counter" class="hidden">
+                        <span id="hit-label">⚔️ الضربات</span>
+                        <span id="hit-value">0 / 5</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Start Screen -->
+            <div id="start-screen" class="screen active">
+                <div class="screen-content">
+                    <div class="menu-buttons">
+                        <button id="start-btn" class="primary-btn">ابدأ اللعب</button>
+                        <button id="info-btn" class="primary-btn">التعليمات</button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Instructions Screen -->
+            <div id="instructions-screen" class="screen hidden">
+                <div class="screen-content">
+                    <h1 class="title-ar">تفاصيل الرحلة</h1>
+
+                    <div class="info-section">
+                        <h3>طريقة اللعب</h3>
+                        <p>استخدم الأسهم أو اللمس لتحريك الأعمدة والغيوم والمرايا لحماية الأبطال.</p>
+                    </div>
+
+                    <div class="info-section">
+                        <h3>فريق العمل</h3>
+                        <ul class="team-list">
+                            <li>رهف فايز</li>
+                            <li>أشواق قاسم</li>
+                            <li>تغريد عمر</li>
+                        </ul>
+                    </div>
+
+                    <button id="back-btn" class="primary-btn">عودة</button>
+                </div>
+            </div>
+            <div id="dialogue-screen" class="screen hidden">
+                <div class="dialogue-box">
+                    <div class="dialogue-characters">
+                        <div id="char-left" class="char-portrait"><img src="yasmen.png" alt="ياسمين"
+                                style="width:100%;height:100%;object-fit:contain;border-radius:50%;"></div>
+                        <div id="char-right" class="char-portrait"><img src="ali.png" alt="علاء الدين"
+                                style="width:100%;height:100%;object-fit:contain;border-radius:50%;"></div>
+                    </div>
+                    <div class="dialogue-content">
+                        <span id="dialogue-speaker"></span>
+                        <p id="dialogue-text"></p>
+                    </div>
+                    <button id="dialogue-next" class="dialogue-btn">التالي ←</button>
+                </div>
+            </div>
+
+            <!-- Stage Complete Screen -->
+            <div id="stage-complete-screen" class="screen hidden">
+                <div class="screen-content">
+                    <h1 class="stage-clear">أحسنت</h1>
+                    <p id="stage-complete-msg"></p>
+                    <button id="next-stage-btn" class="primary-btn">المرحلة التالية →</button>
+                </div>
+            </div>
+
+            <!-- Game Over Screen -->
+            <div id="game-over-screen" class="screen hidden">
+                <div class="screen-content">
+                    <h1>انتهت الرحلة 🌙</h1>
+                    <p>النقاط النهائية: <span id="final-score">0</span></p>
+                    <p id="game-over-stage"></p>
+                    <button id="restart-btn" class="primary-btn">حاول مرة أخرى</button>
+                </div>
+            </div>
+
+            <!-- Victory Screen -->
+            <div id="victory-screen" class="screen hidden">
+                <div class="screen-content victory-content">
+                    <h1>النصر</h1>
+                    <p class="victory-text">معًا نستطيع مواجهة أي شيء</p>
+                    <p>النقاط النهائية: <span id="victory-score">0</span></p>
+                    <button id="replay-btn" class="primary-btn">العب مرة أخرى</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
