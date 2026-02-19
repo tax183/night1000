@@ -302,6 +302,7 @@ function showScreen(id) {
 function hideAllScreens() {
     document.querySelectorAll('.screen').forEach(s => { s.classList.add('hidden'); s.classList.remove('active'); });
     if (G.currentDialogueAudio) { G.currentDialogueAudio.pause(); G.currentDialogueAudio = null; }
+    document.getElementById('mobile-controls').classList.remove('stage1-active');
 }
 
 // ===== DIALOGUE =====
@@ -412,6 +413,7 @@ function initStage(n) {
     }
     initStars(); G.playing = true; G.lastTime = performance.now();
     hideAllScreens(); updateHUD();
+    if (n === 1) document.getElementById('mobile-controls').classList.add('stage1-active');
 }
 
 // ===== UPDATE STAGES =====
@@ -700,6 +702,12 @@ canvas.addEventListener('mouseup', handleUp);
 canvas.addEventListener('touchstart', handleDown, { passive: false });
 canvas.addEventListener('touchmove', handleMove, { passive: false });
 canvas.addEventListener('touchend', handleUp);
+
+// Mobile Button Listeners
+document.getElementById('btn-up').addEventListener('touchstart', (e) => { e.preventDefault(); G.input.up = true; Sound.whoosh(); }, { passive: false });
+document.getElementById('btn-up').addEventListener('touchend', () => { G.input.up = false; });
+document.getElementById('btn-down').addEventListener('touchstart', (e) => { e.preventDefault(); G.input.down = true; Sound.whoosh(); }, { passive: false });
+document.getElementById('btn-down').addEventListener('touchend', () => { G.input.down = false; });
 
 // ===== MAIN LOOP =====
 function mainLoop(ts) {
