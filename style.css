@@ -231,14 +231,25 @@ canvas {
 
 .screen-content {
     background: linear-gradient(135deg, rgba(44, 14, 58, 0.95), rgba(11, 13, 23, 0.95));
-    /* Dark Royal */
     border: 2px solid var(--gold-color);
     border-radius: 24px;
-    padding: 50px 60px;
-    max-width: 650px;
+    padding: 30px 40px;
+    /* Restored balanced padding */
+    max-width: 500px;
     width: 90%;
     box-shadow: 0 0 50px rgba(0, 0, 0, 0.9), 0 0 25px rgba(212, 175, 55, 0.2), inset 0 0 60px rgba(0, 0, 0, 0.6);
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0rem;
+}
+
+#start-screen .screen-content {
+    padding: 0px 40px 20px 40px;
+    /* Specific padding for start screen */
+    transform: translateY(-15%);
+    /* Centering buttons only for start screen */
 }
 
 .title-ar {
@@ -274,9 +285,32 @@ canvas {
 .menu-buttons {
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
+    gap: 1rem;
     align-items: center;
-    margin-top: 2rem;
+    margin-top: 0;
+    /* Let flex gap or direct margin control this */
+}
+
+.game-logo {
+    max-width: 280px;
+    height: auto;
+    margin: 0;
+    /* Removed margin to fix the gap */
+    display: block;
+    filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.4));
+    animation: floating 3s ease-in-out infinite;
+}
+
+@keyframes floating {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
 }
 
 .info-section {
@@ -470,6 +504,12 @@ canvas {
 /* ---------- Game Over ---------- */
 #game-over-screen .screen-content {
     border-color: rgba(192, 57, 43, 0.4);
+}
+
+#game-over-screen h1 {
+    color: var(--accent-color);
+    text-shadow: 0 0 20px rgba(192, 57, 43, 0.5);
+    margin-bottom: 2rem;
 }
 
 #game-over-stage {

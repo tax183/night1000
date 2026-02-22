@@ -23,6 +23,24 @@ const Sound = {
     stageWin() { this.tone(500, 'sine', 0.3, 0.1); setTimeout(() => this.tone(700, 'sine', 0.4, 0.08), 150); }
 };
 
+// ===== BACKGROUND MUSIC =====
+const bgm = new Audio('arabian-nights-music-thememusic-scarymusic-timpani-soundtrackmusic-bassguitar-guitar-soulmusic-singing-electronicmusic-d.mp3');
+bgm.loop = true;
+bgm.volume = 0.4;
+function playBGM() {
+    bgm.play().catch(e => console.log("BGM play failed, waiting for interaction"));
+}
+// Try playing immediately
+playBGM();
+
+// Play BGM on first interaction (fallback for browser block)
+window.addEventListener('click', () => { if (bgm.paused) playBGM(); }, { once: true });
+window.addEventListener('touchstart', () => { if (bgm.paused) playBGM(); }, { once: true });
+
+function pauseBGM() {
+    bgm.pause();
+}
+
 // ===== CANVAS =====
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -30,8 +48,8 @@ let W, H;
 function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
 window.addEventListener('resize', resize); resize();
 
-// ===== LOAD CARPET IMAGE =====
-const carpetImg = new Image(); carpetImg.src = 'carpet.png';
+// ===== LOAD ASSETS =====
+const carpetImg = new Image(); carpetImg.src = '2.png'; // Replaced with 2.png (formerly yoyo)
 let carpetLoaded = false; carpetImg.onload = () => { carpetLoaded = true; };
 
 const bossImg = new Image(); bossImg.src = 'boss.png';
@@ -53,7 +71,7 @@ const DIALOGUES = {
         { speaker: 'ياسمين', emoji: '👸', text: 'لا وقت للذعر يا علاء! سأشق لك طريقاً بين الركام.. ارفع هذه الأعمدة بيدك أو اخفضها، بسرعة قبل أن نصطدم!', audio: 'Video Project 9.m4a' }
     ],
     stage2: [
-        { speaker: 'ياسمين', emoji: '👸', text: 'انتبه! نيران الجن تطاردنا من الأسفل.. لن تدعنا نصطدم!', audio: 'Video Project 10.m4a' },
+        { speaker: 'ياسمين', emoji: '👸', text: 'انتبه! نيران الجن تطاردنا من الأسفل.. لن تدعنا نصل الى القصر', audio: 'Video Project 10.m4a' },
         { speaker: 'علاء الدين', emoji: '🧞', text: 'ياسمين، سحركِ هو درعنا الوحيد الآن!', audio: 'Video Project 13.m4a' },
         { speaker: 'ياسمين', emoji: '👸', text: 'إذن راقب يدي! اسحب الغيوم السحرية واجعلها سداً منيعاً.. لن تلمسك شعرة من نار وهم معي!', audio: 'Video Project 11.m4a' }
     ],
@@ -86,7 +104,8 @@ const G = {
     // Dialogue
     dialogueQueue: [], dialogueIdx: 0, typing: false, typedText: '', typeInterval: null, dialogueCb: null,
     currentDialogueAudio: null, // Audio object for current dialogue
-    shakeTime: 0
+    shakeTime: 0,
+    stage1DialogueShown: false // Flag to track if stage 1 dialogue was shown
 };
 
 // ===== HELPERS =====
@@ -307,6 +326,7 @@ function hideAllScreens() {
 
 // ===== DIALOGUE =====
 function startDialogue(key, cb) {
+    pauseBGM(); // Stop music during dialogue to hear voices clearly
     G.dialogueQueue = DIALOGUES[key] || []; G.dialogueIdx = 0; G.dialogueCb = cb;
     if (G.dialogueQueue.length === 0) { if (cb) cb(); return; }
     showScreen('dialogue-screen'); showDialogueLine();
@@ -387,7 +407,7 @@ function initStage(n) {
     document.getElementById('hud').classList.remove('hidden');
     document.getElementById('health-bar-container').classList.add('hidden');
     document.getElementById('hit-counter').classList.add('hidden');
-
+    playBGM(); // Start/resume music when stage begins
     if (n === 1) {
         G.pillarsPassed = 0; G.vOffset = 0;
         G.carpetBaseY = H / 2; G.carpetX = 180;
@@ -735,7 +755,12 @@ function mainLoop(ts) {
 document.getElementById('start-btn').addEventListener('click', () => {
     if (audioCtx.state === 'suspended') audioCtx.resume();
     G.score = 0;
-    startDialogue('stage1', () => initStage(1));
+    if (!G.stage1DialogueShown) {
+        G.stage1DialogueShown = true;
+        startDialogue('stage1', () => initStage(1));
+    } else {
+        initStage(1);
+    }
 });
 document.getElementById('info-btn').addEventListener('click', () => {
     showScreen('instructions-screen');
@@ -748,8 +773,8 @@ document.getElementById('next-stage-btn').addEventListener('click', () => {
     const next = G.stage + 1;
     startDialogue('stage' + next, () => initStage(next));
 });
-document.getElementById('restart-btn').addEventListener('click', () => { G.score = 0; startDialogue('stage1', () => initStage(1)); });
-document.getElementById('replay-btn').addEventListener('click', () => { G.score = 0; startDialogue('stage1', () => initStage(1)); });
+document.getElementById('restart-btn').addEventListener('click', () => { G.score = 0; initStage(G.stage); });
+document.getElementById('replay-btn').addEventListener('click', () => { G.score = 0; G.stage1DialogueShown = false; startDialogue('stage1', () => initStage(1)); });
 
 
 
