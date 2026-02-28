@@ -76,18 +76,21 @@
                 </div>
             </div>
             <div id="dialogue-screen" class="screen hidden">
-                <div class="dialogue-box">
-                    <div class="dialogue-characters">
-                        <div id="char-left" class="char-portrait"><img src="3.png" alt="ياسمين"
-                                style="width:100%;height:100%;object-fit:contain;border-radius:50%;"></div>
-                        <div id="char-right" class="char-portrait"><img src="1.png" alt="علاء الدين"
-                                style="width:100%;height:100%;object-fit:contain;border-radius:50%;"></div>
+                <div class="dialogue-wrapper">
+                    <!-- Character portraits on sides -->
+                    <div id="char-left" class="char-side char-side-left">
+                        <img src="CH2.png" alt="ياسمين">
                     </div>
-                    <div class="dialogue-content">
-                        <span id="dialogue-speaker"></span>
-                        <p id="dialogue-text"></p>
+                    <div class="dialogue-box">
+                        <div class="dialogue-content">
+                            <span id="dialogue-speaker"></span>
+                            <p id="dialogue-text"></p>
+                        </div>
+                        <button id="dialogue-next" class="dialogue-btn">التالي</button>
                     </div>
-                    <button id="dialogue-next" class="dialogue-btn">التالي ←</button>
+                    <div id="char-right" class="char-side char-side-right">
+                        <img src="CH1.png" alt="علاء الدين">
+                    </div>
                 </div>
             </div>
 

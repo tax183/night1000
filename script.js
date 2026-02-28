@@ -27,61 +27,97 @@ const Sound = {
 const bgm = new Audio('arabian-nights-music-thememusic-scarymusic-timpani-soundtrackmusic-bassguitar-guitar-soulmusic-singing-electronicmusic-d.mp3');
 bgm.loop = true;
 bgm.volume = 0.4;
+
+const introBGM = new Audio('arabian-nights.mp3');
+introBGM.loop = true;
+introBGM.volume = 0.5;
+
 function playBGM() {
+    // If dialogue is active, don't play anything
+    if (document.getElementById('dialogue-screen') && !document.getElementById('dialogue-screen').classList.contains('hidden')) return;
+
+    // If we are at the start screen, play intro sound
+    if (document.getElementById('start-screen') && !document.getElementById('start-screen').classList.contains('hidden')) {
+        bgm.pause();
+        introBGM.play().catch(e => console.log("Intro BGM play failed"));
+        return;
+    }
+
+    // Otherwise play the regular BGM (game stages)
+    introBGM.pause();
     bgm.play().catch(e => console.log("BGM play failed, waiting for interaction"));
 }
 // Try playing immediately
 playBGM();
 
 // Play BGM on first interaction (fallback for browser block)
-window.addEventListener('click', () => { if (bgm.paused) playBGM(); }, { once: true });
-window.addEventListener('touchstart', () => { if (bgm.paused) playBGM(); }, { once: true });
+window.addEventListener('click', () => {
+    if (document.getElementById('dialogue-screen').classList.contains('hidden')) playBGM();
+}, { once: true });
+window.addEventListener('touchstart', () => {
+    if (document.getElementById('dialogue-screen').classList.contains('hidden')) playBGM();
+}, { once: true });
 
 function pauseBGM() {
     bgm.pause();
+    introBGM.pause();
 }
 
 // ===== CANVAS =====
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 let W, H;
-function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+}
 window.addEventListener('resize', resize); resize();
 
 // ===== LOAD ASSETS =====
-const carpetImg = new Image(); carpetImg.src = '2.png'; // Replaced with 2.png (formerly yoyo)
+const carpetImg = new Image(); carpetImg.src = 'FLY GIRL.png';
 let carpetLoaded = false; carpetImg.onload = () => { carpetLoaded = true; };
 
-const bossImg = new Image(); bossImg.src = 'boss.png';
+const bossImg = new Image(); bossImg.src = 'CH3.png';
 let bossLoaded = false; bossImg.onload = () => { bossLoaded = true; };
 
-const cloudImg = new Image(); cloudImg.src = 'cloud.png';
+const cloudImg = new Image(); cloudImg.src = 'C.png';
 let cloudLoaded = false; cloudImg.onload = () => { cloudLoaded = true; };
 
 const mirrorImg = new Image(); mirrorImg.src = 'M.png';
 let mirrorLoaded = false; mirrorImg.onload = () => { mirrorLoaded = true; };
 
-const xImg = new Image(); xImg.src = 'x.png';
+const xImg = new Image(); xImg.src = 'G.png';
 let xLoaded = false; xImg.onload = () => { xLoaded = true; };
+
+// Stage 1 background image
+const stage1BgImg = new Image(); stage1BgImg.src = 'خلفيةX2.png';
+let stage1BgLoaded = false; stage1BgImg.onload = () => { stage1BgLoaded = true; };
 
 // ===== DIALOGUES =====
 const DIALOGUES = {
     stage1: [
-        { speaker: 'علاء الدين', emoji: '🧞', text: 'ياسمين! المصباح تحطم.. المدينة تنهار من تحتنا!', audio: 'Video Project 8.m4a' },
-        { speaker: 'ياسمين', emoji: '👸', text: 'لا وقت للذعر يا علاء! سأشق لك طريقاً بين الركام.. ارفع هذه الأعمدة بيدك أو اخفضها، بسرعة قبل أن نصطدم!', audio: 'Video Project 9.m4a' }
+        { speaker: 'علاء الدين', side: 'right', text: 'ياسمين! المصباح تحطم.. المدينة تنهار من تحتنا!', audio: 'Video Project 8.m4a' },
+        { speaker: 'ياسمين', side: 'left', text: 'لا وقت للذعر يا علاء! سأشق لك طريقاً بين الركام.. ارفع هذه الأعمدة بيدك أو اخفضها، بسرعة قبل أن نصطدم!', audio: 'Video Project 9.m4a' }
     ],
     stage2: [
-        { speaker: 'ياسمين', emoji: '👸', text: 'انتبه! نيران الجن تطاردنا من الأسفل.. لن تدعنا نصل الى القصر', audio: 'Video Project 10.m4a' },
-        { speaker: 'علاء الدين', emoji: '🧞', text: 'ياسمين، سحركِ هو درعنا الوحيد الآن!', audio: 'Video Project 13.m4a' },
-        { speaker: 'ياسمين', emoji: '👸', text: 'إذن راقب يدي! اسحب الغيوم السحرية واجعلها سداً منيعاً.. لن تلمسك شعرة من نار وهم معي!', audio: 'Video Project 11.m4a' }
+        { speaker: 'ياسمين', side: 'left', text: 'انتبه! نيران الجن تطاردنا من الأسفل.. لن تدعنا نصل الى القصر', audio: 'Video Project 10.m4a' },
+        { speaker: 'علاء الدين', side: 'right', text: 'ياسمين، سحركِ هو درعنا الوحيد الآن!', audio: 'Video Project 13.m4a' },
+        { speaker: 'ياسمين', side: 'left', text: 'إذن راقب يدي! اسحب الغيوم السحرية واجعلها سداً منيعاً.. لن تلمسك شعرة من نار وهم معي!', audio: 'Video Project 11.m4a' }
     ],
     stage3: [
-        { speaker: 'علاء الدين', emoji: '🧞', text: 'وصلنا لقصر المرايا.. لكن الظل يحيط بنا، سحره البنفسجي يمتص الضوء!', audio: 'Video Project 14.m4a' },
-        { speaker: 'ياسمين', emoji: '👸', text: 'الظلال تخشى الضوء دائماً! وجّه هذه المرايا الذهبية نحوه.. اقلب سحره عليه واجعله يذوق وبال أمره!', audio: 'Video Project 12.m4a' }
+        { speaker: 'علاء الدين', side: 'right', text: 'وصلنا لقصر المرايا.. لكن الظل يحيط بنا، سحره البنفسجي يمتص الضوء!', audio: 'Video Project 14.m4a' },
+        { speaker: 'ياسمين', side: 'left', text: 'الظلال تخشى الضوء دائماً! وجّه هذه المرايا الذهبية نحوه.. اقلب سحره عليه واجعله يذوق وبال أمره!', audio: 'Video Project 12.m4a' }
     ],
     victory: [
-        { speaker: 'ياسمين', emoji: '👸', text: 'رأيت؟ حتى الظلام ينحني أمام قلبين لا يعرفان الخوف! 💛', audio: 'Video Project 16.m4a' },
-        { speaker: 'علاء الدين', emoji: '🧞', text: 'بغداد تنفس الصعداء مجدداً.. لم أكن لأفعلها لولا شجاعتكِ.', audio: 'Video Project 15.m4a' }
+        { speaker: 'ياسمين', side: 'left', text: 'رأيت؟ حتى الظلام ينحني أمام قلبين لا يعرفان الخوف!', audio: 'Video Project 16.m4a' },
+        { speaker: 'علاء الدين', side: 'right', text: 'بغداد تنفس الصعداء مجدداً.. لم أكن لأفعلها لولا شجاعتكِ.', audio: 'Video Project 15.m4a' },
+        { speaker: 'أمجد', side: 'right', text: 'عمل رائع يا أبطال! انتصرتم على الظلام وأنقذتم المدينة!' }
     ]
 };
 
@@ -127,8 +163,8 @@ function drawCarpet(x, y) {
     const wobble = Math.sin(G.time * 5) * 3;
     ctx.translate(x, y + wobble);
     if (carpetLoaded) {
-        // Draw the Jasmine carpet image, centered and scaled
-        const imgW = 160;
+        // Draw the Jasmine carpet image, centered and sized
+        const imgW = 200; // Even smaller as requested
         const imgH = imgW * (carpetImg.height / carpetImg.width);
         ctx.drawImage(carpetImg, -imgW / 2, -imgH / 2 - 10, imgW, imgH);
     } else {
@@ -204,7 +240,7 @@ function drawCloud(s) {
 
     if (cloudLoaded) {
         // Draw cloud image
-        const imgW = s.radius * 2.8; // Scale cloud appropriately
+        const imgW = s.radius * 4.2; // Even larger clouds as requested
         const imgH = imgW * (cloudImg.height / cloudImg.width);
         ctx.shadowBlur = s.isDragging ? 25 : 15;
         ctx.shadowColor = s.isDragging ? '#d4af37' : '#fff';
@@ -227,7 +263,7 @@ function drawMirror(m) {
 
     if (mirrorLoaded) {
         // Draw Mirror Image (M.png)
-        const scale = 0.25; // Smaller
+        const scale = 0.18; // Smaller
         const imgW = mirrorImg.width * scale;
         const imgH = mirrorImg.height * scale;
 
@@ -263,7 +299,7 @@ function drawBoss(b) {
     if (bossLoaded) {
         // Draw boss image with glow
         ctx.shadowBlur = 30; ctx.shadowColor = '#8e44ad';
-        const imgW = 220;
+        const imgW = 240; // Shrunk
         const imgH = imgW * (bossImg.height / bossImg.width);
         ctx.drawImage(bossImg, -imgW / 2, -imgH / 2, imgW, imgH);
         ctx.shadowBlur = 0;
@@ -334,19 +370,30 @@ function startDialogue(key, cb) {
 function showDialogueLine() {
     const d = G.dialogueQueue[G.dialogueIdx]; if (!d) { hideAllScreens(); if (G.dialogueCb) G.dialogueCb(); return; }
 
-    // Stop previous audio if any
+    // Stop previous audio and pause BGM
     if (G.currentDialogueAudio) { G.currentDialogueAudio.pause(); G.currentDialogueAudio = null; }
+    pauseBGM();
 
-    // Setup UI first
+    // Setup character portraits with glowing outline for speaker
     const charLeft = document.getElementById('char-left');
     const charRight = document.getElementById('char-right');
-    const isYasmine = d.speaker === 'ياسمين';
-    charLeft.style.opacity = isYasmine ? '1' : '0.4';
-    charLeft.style.transform = isYasmine ? 'scale(1.1)' : 'scale(0.9)';
-    charLeft.style.filter = isYasmine ? 'drop-shadow(0 0 12px #d4af37)' : 'grayscale(0.5)';
-    charRight.style.opacity = !isYasmine ? '1' : '0.4';
-    charRight.style.transform = !isYasmine ? 'scale(1.1)' : 'scale(0.9)';
-    charRight.style.filter = !isYasmine ? 'drop-shadow(0 0 12px #d4af37)' : 'grayscale(0.5)';
+
+    // Determine which side is speaking
+    const speakingSide = d.side || (d.speaker === 'ياسمين' ? 'left' : 'right');
+
+    // Apply speaking/dimmed classes
+    if (speakingSide === 'left') {
+        charLeft.classList.add('char-speaking');
+        charLeft.classList.remove('char-dimmed');
+        charRight.classList.add('char-dimmed');
+        charRight.classList.remove('char-speaking');
+    } else {
+        charRight.classList.add('char-speaking');
+        charRight.classList.remove('char-dimmed');
+        charLeft.classList.add('char-dimmed');
+        charLeft.classList.remove('char-speaking');
+    }
+
     document.getElementById('dialogue-speaker').textContent = d.speaker;
 
     // Text setup
@@ -477,6 +524,10 @@ function updateStage1(dt) {
 }
 
 function drawStage1() {
+    // Draw stage 1 background image
+    if (stage1BgLoaded) {
+        ctx.drawImage(stage1BgImg, 0, 0, W, H);
+    }
     // Parallax clouds
     for (let i = 0; i < 5; i++) {
         const cx = ((G.time * 12 + i * 280) % (W + 200)) - 100;
@@ -621,7 +672,7 @@ function drawStage3() {
         ctx.shadowColor = m.reflected ? '#d4af37' : '#8e44ad';
 
         if (xLoaded) {
-            const size = m.radius * 2.5;
+            const size = m.radius * 3.5;
             ctx.drawImage(xImg, -size / 2, -size / 2, size, size);
         } else {
             ctx.fillStyle = m.reflected ? '#d4af37' : '#8e44ad';

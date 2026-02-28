@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Thousandth Night - Poster</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=Noto+Kufi+Arabic:wght@400;700&family=Cinzel+Decorative:wght@700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --gold: #d4af37;
+            --purple-dark: #2c0e3a;
+            --purple-light: #4a1c61;
+            --teal: #1abc9c;
+            --text: #e8d3b9;
+        }
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 1000px;
+            height: 600px;
+            background: var(--purple-dark);
+            font-family: 'Noto Kufi Arabic', sans-serif;
+            color: var(--text);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .poster-container {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a0624 0%, #2c0e3a 50%, #1a0624 100%);
+            border: 10px solid var(--gold);
+            box-sizing: border-box;
+            position: relative;
+            padding: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto 1fr auto;
+            gap: 20px;
+            box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Star Background Decor */
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(white, rgba(255, 255, 255, .2) 2px, transparent 40px);
+            background-size: 50px 50px;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        .header {
+            grid-column: 1 / span 2;
+            text-align: center;
+        }
+
+        .title {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 4rem;
+            color: var(--gold);
+            margin: 0;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+            letter-spacing: 5px;
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            color: var(--teal);
+            font-style: italic;
+            margin-top: -10px;
+            opacity: 0.9;
+        }
+
+        .description {
+            grid-column: 1 / span 2;
+            text-align: center;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            color: #ccc;
+        }
+
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            padding-right: 40px;
+        }
+
+        .features-list {
+            list-style: none;
+            padding: 0;
+            text-align: right;
+        }
+
+        .features-list li {
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            position: relative;
+            padding-right: 25px;
+        }
+
+        .features-list li::before {
+            content: '✦';
+            position: absolute;
+            right: 0;
+            color: var(--gold);
+        }
+
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .game-visual {
+            width: 320px;
+            height: 180px;
+            border: 3px solid var(--gold);
+            background: #111;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .game-visual img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+        }
+
+        .qr-section {
+            position: absolute;
+            bottom: -20px;
+            left: -40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .qr-code {
+            width: 120px;
+            height: 120px;
+            background: white;
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        .footer {
+            grid-column: 1 / span 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 20px;
+        }
+
+        .team-names {
+            text-align: right;
+            font-size: 1rem;
+            border-right: 3px solid var(--gold);
+            padding-right: 15px;
+        }
+
+        .team-names span {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .game-logo-mini {
+            width: 100px;
+            filter: drop-shadow(0 0 5px var(--gold));
+        }
+
+        /* Arabic styling for content */
+        .rtl {
+            direction: rtl;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="poster-container">
+        <div class="stars"></div>
+
+        <div class="header">
+            <h1 class="title">The Thousandth Night</h1>
+            <div class="tagline">تغيّر العالم.. تحمي الأبطال</div>
+        </div>
+
+        <div class="description rtl">
+            لعبة لغز حركة فريد من نوعه حيث لا تتحكم بالأبطال، بل بالعالم من حولهم!
+            قم بتحريك الأعمدة والغيوم والمرايا لحماية علاء الدين وياسمين في رحلتهم السحرية.
+        </div>
+
+        <div class="right-panel">
+            <div class="game-visual">
+                <img src="logo.png" alt="Game Logo">
+                <!-- Instruction for user: Repace this with a real screenshot if available -->
+            </div>
+
+            <div class="qr-section">
+                <div class="qr-code">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=TheThousandthNight"
+                        alt="QR Code">
+                </div>
+            </div>
+        </div>
+
+        <div class="left-panel">
+            <ul class="features-list rtl">
+                <li>تحكم كامل في عناصر البيئة</li>
+                <li>ميكانيكا لعب مبتكرة "Reversed Roles"</li>
+                <li>3 مراحل سحرية متنوعة الصعوبة</li>
+                <li>حوارات صوتية باللهجة العربية (AI)</li>
+                <li>تجربة بصرية وصوتية غامرة</li>
+                <li>لعبة آركيد تركز على سرعة البديهة</li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            <div class="team-names rtl">
+                <span>تغريد عمر - مطورة اللعبة</span>
+                <span>رهف فايز - مصممة الواجهات</span>
+                <span>أشواق قاسم - القصة والأصوات</span>
+            </div>
+            <img src="logo.png" alt="Logo" class="game-logo-mini">
+        </div>
+    </div>
+</body>
+
+</html>
