@@ -438,7 +438,8 @@ canvas {
     align-items: flex-end;
     justify-content: center;
     transition: all 0.5s ease;
-    z-index: 20;
+    z-index: 40;
+    /* Higher than dialogue box to appear in front */
     pointer-events: none;
     /* Allow clicks to pass through characters to the button */
     /* Characters on top of the box */
@@ -484,8 +485,8 @@ canvas {
         0 0 30px rgba(212, 175, 55, 0.15),
         inset 0 0 50px rgba(0, 0, 0, 0.6);
     position: relative;
-    z-index: 30;
-    /* Higher than characters to ensure interaction */
+    z-index: 10;
+    /* Lower than characters */
     align-self: center;
     margin-bottom: 40px;
 }
