@@ -116,8 +116,7 @@ const DIALOGUES = {
     ],
     victory: [
         { speaker: 'ياسمين', side: 'left', text: 'رأيت؟ حتى الظلام ينحني أمام قلبين لا يعرفان الخوف!', audio: 'Video Project 16.m4a' },
-        { speaker: 'علاء الدين', side: 'right', text: 'بغداد تنفس الصعداء مجدداً.. لم أكن لأفعلها لولا شجاعتكِ.', audio: 'Video Project 15.m4a' },
-        { speaker: 'أمجد', side: 'right', text: 'عمل رائع يا أبطال! انتصرتم على الظلام وأنقذتم المدينة!' }
+        { speaker: 'علاء الدين', side: 'right', text: 'بغداد تنفس الصعداء مجدداً.. لم أكن لأفعلها لولا شجاعتكِ.', audio: 'Video Project 15.m4a' }
     ]
 };
 
@@ -178,31 +177,32 @@ function drawCarpet(x, y) {
     ctx.restore();
 }
 
-const bImg = new Image(); bImg.src = 'b.png';
-let bLoaded = false; bImg.onload = () => { bLoaded = true; };
+const tImg = new Image(); tImg.src = 'T.png';
+let tLoaded = false; tImg.onload = () => { tLoaded = true; };
 
 // ===== DRAW PILLAR =====
-function drawPillar(p, vo) {
+function drawPillar(p, vo, pOsc) {
     ctx.save();
-    const gy = p.gapY + (vo || 0);
+    const gy = p.gapY + (vo || 0) + (pOsc || 0);
     const topH = gy - p.gapSize / 2;
     const botY = gy + p.gapSize / 2;
 
-    if (bLoaded) {
-        // Draw pillar image (b.png)
-        const imgW = p.width + 220; // Very Wide
+    if (tLoaded) {
+        // Draw pillar image (T.png)
+        const imgW = p.width + 120; // Slightly wider pillars as requested
         const offset = (imgW - p.width) / 2;
+        const imgH = 1000; // Sufficient height
         // Draw top part (inverted)
         if (topH > 0) {
             ctx.save();
             ctx.translate(p.x + p.width / 2, topH);
             ctx.scale(1, -1); // Flip vertically
-            ctx.drawImage(bImg, -imgW / 2, 0, imgW, 600);
+            ctx.drawImage(tImg, -imgW / 2, 0, imgW, imgH);
             ctx.restore();
         }
         // Draw bottom part
         if (botY < H) {
-            ctx.drawImage(bImg, p.x - offset, botY, imgW, 600);
+            ctx.drawImage(tImg, p.x - offset, botY, imgW, imgH);
         }
     } else {
         // Fallback: Original drawing code
@@ -439,10 +439,10 @@ document.getElementById('dialogue-next').addEventListener('click', () => {
 
 // ===== SPAWN PILLAR =====
 function spawnPillar(xPos) {
-    const gapSize = 200;
-    const margin = 80;
+    const gapSize = 115; // Even longer pillars
+    const margin = 40;
     const gapY = rand(margin + gapSize / 2, H - margin - gapSize / 2);
-    G.pillars.push({ x: xPos, gapY, width: 80, gapSize });
+    G.pillars.push({ x: xPos, gapY, width: 80, gapSize, phase: rand(0, Math.PI * 2) });
 }
 
 // ===== INIT STAGES =====
@@ -487,7 +487,7 @@ function initStage(n) {
 function updateStage1(dt) {
     const speed = 200 + G.pillarsPassed * 10;
     // Arrow keys move all pillars vertically
-    const moveAmt = 280 * dt;
+    const moveAmt = 480 * dt; // Increased from 280 for faster response
     if (G.input.down) G.vOffset += moveAmt;
     if (G.input.up) G.vOffset -= moveAmt;
     // Carpet auto-drifts gently
@@ -504,12 +504,20 @@ function updateStage1(dt) {
         const p = G.pillars[idx];
         p.x -= speed * dt;
         // Collision with vOffset
-        const gy = p.gapY + G.vOffset;
-        const topH = gy - p.gapSize / 2 + 8;
-        const botY = gy + p.gapSize / 2 - 8;
-        const s = 14;
-        if (G.carpetX + s > p.x && G.carpetX - s < p.x + p.width) {
-            if (G.carpetY - s < topH || G.carpetY + s > botY) doGameOver();
+        // Pillar individual movement
+        const pOsc = Math.sin(G.time * 1.5 + p.phase) * 60;
+        const gy = p.gapY + G.vOffset + pOsc;
+        const topH = gy - p.gapSize / 2;
+        const botY = gy + p.gapSize / 2;
+        const s = 1; // Atomic vertical hitbox (1 pixel)
+        // Only trigger if carpet center is at the ABSOLUTE center of the pillar (3px window)
+        const pillarCenter = p.x + p.width / 2;
+        if (G.carpetX > pillarCenter - 3 && G.carpetX < pillarCenter + 3) {
+            if (G.carpetY - s < topH || G.carpetY + s > botY) {
+                G.shakeTime = 0.4;
+                G.playing = false;
+                setTimeout(doGameOver, 400);
+            }
         }
         // Passed
         if (p.x + p.width < 0) {
@@ -517,10 +525,10 @@ function updateStage1(dt) {
             G.pillarsPassed++; G.score += 10;
             Sound.tone(400, 'sine', 0.1, 0.04);
             updateHUD();
-            if (G.pillarsPassed >= 12) stageComplete();
+            if (G.pillarsPassed >= 9) stageComplete(); // Reduced from 12
         }
     }
-    document.getElementById('progress-bar').style.width = clamp(G.pillarsPassed / 12 * 100, 0, 100) + '%';
+    document.getElementById('progress-bar').style.width = clamp(G.pillarsPassed / 9 * 100, 0, 100) + '%';
 }
 
 function drawStage1() {
@@ -528,13 +536,19 @@ function drawStage1() {
     if (stage1BgLoaded) {
         ctx.drawImage(stage1BgImg, 0, 0, W, H);
     }
+    // Draw Stars for Stage 1
+    drawStars();
+
     // Parallax clouds
     for (let i = 0; i < 5; i++) {
         const cx = ((G.time * 12 + i * 280) % (W + 200)) - 100;
         ctx.fillStyle = `rgba(100,70,150,${0.06 + i * 0.02})`;
         ctx.beginPath(); ctx.ellipse(cx, 70 + i * 55, 90, 28, 0, 0, Math.PI * 2); ctx.fill();
     }
-    G.pillars.forEach(p => drawPillar(p, G.vOffset));
+    G.pillars.forEach(p => {
+        const pOsc = Math.sin(G.time * 1.5 + p.phase) * 60;
+        drawPillar(p, G.vOffset, pOsc);
+    });
     drawCarpet(G.carpetX, G.carpetY);
     // Magic dust trail
     ctx.fillStyle = 'rgba(255,215,0,0.3)';

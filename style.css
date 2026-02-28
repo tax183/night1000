@@ -397,11 +397,16 @@ canvas {
     min-width: 180px;
 }
 
-#info-btn,
-#back-btn {
+#info-btn {
     background-image: url('instra.png');
     padding: 35px 50px;
     /* Scaled down */
+    min-width: 180px;
+}
+
+#back-btn {
+    background-image: url('start.png');
+    padding: 35px 50px;
     min-width: 180px;
 }
 
