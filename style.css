@@ -439,6 +439,8 @@ canvas {
     justify-content: center;
     transition: all 0.5s ease;
     z-index: 20;
+    pointer-events: none;
+    /* Allow clicks to pass through characters to the button */
     /* Characters on top of the box */
 }
 
@@ -482,7 +484,8 @@ canvas {
         0 0 30px rgba(212, 175, 55, 0.15),
         inset 0 0 50px rgba(0, 0, 0, 0.6);
     position: relative;
-    z-index: 10;
+    z-index: 30;
+    /* Higher than characters to ensure interaction */
     align-self: center;
     margin-bottom: 40px;
 }
