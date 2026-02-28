@@ -246,10 +246,9 @@ canvas {
 }
 
 #start-screen .screen-content {
-    padding: 60px 40px 20px 40px;
-    /* Increased top padding to keep logo visible while rising */
-    transform: translateY(-15%);
-    /* Centering buttons with a stylish upward lift */
+    padding: 60px 40px 40px 40px;
+    transform: translateY(-18%);
+    /* Raised further to appear centered in the page */
 }
 
 .title-ar {
@@ -285,14 +284,17 @@ canvas {
 .menu-buttons {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 1.5rem;
+    /* Increased gap as requested */
     align-items: center;
     margin-top: 0;
+    width: 100%;
+    justify-content: center;
 }
 
 #info-btn {
-    margin-top: -15px;
-    /* Raised the instructions button further upwards */
+    margin-top: 0;
+    /* Reset previous margin to rely on gap */
 }
 
 .game-logo {
@@ -363,19 +365,48 @@ canvas {
 .primary-btn {
     background: url('UI.png') no-repeat center center;
     background-size: 100% 100%;
-    color: var(--text-color);
+    color: transparent;
     border: none;
-    padding: 48px 60px;
-    font-size: 1.5rem;
+    padding: 20px 30px;
+    /* Further reduced for a smaller look */
+    font-size: 0;
+    /* Hide any fallback text */
     font-family: 'Noto Kufi Arabic', sans-serif;
     font-weight: 700;
     cursor: pointer;
     filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
     transition: all 0.3s ease;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    text-shadow: none;
     display: inline-block;
-    min-width: 220px;
+    min-width: 140px;
+    /* Smaller min-width */
     text-align: center;
+}
+
+/* Specific Button Overrides - New Phase */
+#start-btn,
+#replay-btn {
+    background-image: url('start.png');
+    padding: 35px 50px;
+    /* Scaled down */
+    min-width: 180px;
+}
+
+#info-btn,
+#back-btn {
+    background-image: url('instra.png');
+    padding: 35px 50px;
+    /* Scaled down */
+    min-width: 180px;
+}
+
+#dialogue-next,
+#next-stage-btn,
+#restart-btn {
+    background-image: url('next.png');
+    padding: 35px 50px;
+    /* Scaled down */
+    min-width: 180px;
 }
 
 .primary-btn:hover {
