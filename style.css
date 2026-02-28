@@ -209,7 +209,8 @@ canvas {
     position: absolute;
     width: 100%;
     height: 100%;
-    display: flex;
+    display: none;
+    /* Changed from flex to prevent interaction when not active */
     justify-content: center;
     align-items: center;
     text-align: center;
@@ -222,9 +223,13 @@ canvas {
     opacity: 0;
     pointer-events: none;
     transform: scale(0.95);
+    display: none;
+    /* Ensure it's completely unreachable */
 }
 
 .screen.active {
+    display: flex;
+    /* Only show when active */
     opacity: 1;
     transform: scale(1);
 }
