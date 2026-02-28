@@ -691,7 +691,8 @@ canvas {
     }
 
     .char-side {
-        width: 350px;
+        width: 400px;
+        /* Increased from 350px */
         height: 100%;
     }
 
@@ -722,15 +723,19 @@ canvas {
     }
 
     .char-side {
-        width: 140px;
-        height: 55%;
+        width: 280px;
+        /* Signficantly increased from 140px */
+        height: 85%;
+        /* Increased from 55% to be tall enough */
+        bottom: 0;
     }
 
     .char-side-left {
-        left: 5px;
+        left: -10px;
+        /* Slight overlap with screen edge is fine to keep them big */
     }
 
     .char-side-right {
-        right: 5px;
+        right: -10px;
     }
 }
